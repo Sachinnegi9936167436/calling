@@ -10,8 +10,8 @@ export default function Home() {
   const [transactionId, setTransactionId] = useState('');
 
   // YOUR DETAILS - Update these
-  const creatorUPI = "yourname@upi"; 
-  const creatorWhatsApp = "919876543210"; 
+  const creatorUPI = "abhisheksingh17nasa8@okhdfcbank"; 
+  const creatorWhatsApp = "8218978921"; 
   const amount = "10"; // Updated to 10 as per your change
 
   const upiLink = `upi://pay?pa=${creatorUPI}&pn=Consultation&am=${amount}&cu=INR`;
@@ -39,15 +39,9 @@ export default function Home() {
       <div className="glass-card">
         {!success ? (
           <>
-            <div className="profile-img-wrapper">
-              <img 
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
-                alt="Profile" 
-                className="profile-img"
-              />
-            </div>
+
             
-            <h1 className="name">Content Creator</h1>
+            <h1 className="name">SSB WITH ABHI</h1>
             <p className="bio" style={{ marginBottom: '1rem' }}>
               Pay the consultation fee manually to get a direct call from me.
             </p>
@@ -59,6 +53,15 @@ export default function Home() {
             <div className="payment-instructions">
               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Pay ₹{amount} to this UPI ID:</p>
               <div className="upi-id">{creatorUPI}</div>
+
+              {/* QR Code for Desktop users to scan */}
+              <div style={{ marginTop: '1.5rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Scan QR code to pay:</p>
+                <div style={{ background: 'white', padding: '10px', borderRadius: '12px', display: 'inline-block', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                  <img src="/qrcode.png" alt="Payment QR Code" style={{ width: '200px', height: '200px', objectFit: 'contain', borderRadius: '8px' }} />
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Works with any UPI app</p>
+              </div>
               
               <a 
                 href={upiLink}
