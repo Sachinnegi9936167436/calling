@@ -34,6 +34,24 @@ export default function AdminPage() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this submission?')) return;
+    
+    try {
+      const res = await fetch(`/api/admin/submissions/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!res.ok) throw new Error('Failed to delete');
+      
+      // Remove the deleted submission from state
+      setSubmissions(submissions.filter(sub => sub._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting submission');
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container">
@@ -87,6 +105,7 @@ export default function AdminPage() {
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Phone</th>
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Transaction ID</th>
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Amount</th>
+                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -97,6 +116,29 @@ export default function AdminPage() {
                     <td style={{ padding: '1rem' }}>{sub.studentPhone}</td>
                     <td style={{ padding: '1rem', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>{sub.transactionId}</td>
                     <td style={{ padding: '1rem', color: 'var(--success-color)' }}>₹{sub.amount}</td>
+                    <td style={{ padding: '1rem', textAlign: 'center' }}>
+                      <button 
+                        onClick={() => handleDelete(sub._id)}
+                        style={{
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          color: '#ef4444',
+                          border: '1px solid rgba(239, 68, 68, 0.2)',
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '0.875rem',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseOver={(e) => {
+                          e.target.style.background = 'rgba(239, 68, 68, 0.2)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
