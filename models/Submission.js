@@ -22,6 +22,10 @@ const SubmissionSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  contacted: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // Use the existing model if it exists, otherwise create it

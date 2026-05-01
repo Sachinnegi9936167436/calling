@@ -52,6 +52,30 @@ export default function AdminPage() {
     }
   };
 
+  const toggleStatus = async (id, currentStatus) => {
+    try {
+      const res = await fetch(`/api/admin/submissions/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ contacted: !currentStatus }),
+      });
+      
+      if (!res.ok) throw new Error('Failed to update status');
+      
+      const data = await res.json();
+      
+      // Update the local state
+      setSubmissions(submissions.map(sub => 
+        sub._id === id ? { ...sub, contacted: data.submission.contacted } : sub
+      ));
+    } catch (err) {
+      console.error(err);
+      alert('Error updating status');
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="container">
@@ -105,6 +129,7 @@ export default function AdminPage() {
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Phone</th>
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Transaction ID</th>
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Amount</th>
+                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Status</th>
                   <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' }}>Action</th>
                 </tr>
               </thead>
@@ -116,6 +141,25 @@ export default function AdminPage() {
                     <td style={{ padding: '1rem' }}>{sub.studentPhone}</td>
                     <td style={{ padding: '1rem', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>{sub.transactionId}</td>
                     <td style={{ padding: '1rem', color: 'var(--success-color)' }}>₹{sub.amount}</td>
+                    <td style={{ padding: '1rem' }}>
+                      <button 
+                        onClick={() => toggleStatus(sub._id, sub.contacted)}
+                        style={{
+                          background: sub.contacted ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)',
+                          color: sub.contacted ? '#22c55e' : '#eab308',
+                          border: `1px solid ${sub.contacted ? 'rgba(34, 197, 94, 0.2)' : 'rgba(234, 179, 8, 0.2)'}`,
+                          padding: '0.4rem 0.8rem',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          width: '100px',
+                          textAlign: 'center'
+                        }}
+                      >
+                        {sub.contacted ? 'Contacted' : 'Pending'}
+                      </button>
+                    </td>
                     <td style={{ padding: '1rem', textAlign: 'center' }}>
                       <button 
                         onClick={() => handleDelete(sub._id)}
