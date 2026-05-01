@@ -25,11 +25,31 @@ export default function Home() {
 
     setLoading(true);
     
-    // Simulate a submission delay
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentName,
+          studentPhone,
+          transactionId,
+          amount
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit details');
+      }
+
       setSuccess(true);
-    }, 800);
+    } catch (error) {
+      console.error('Error submitting:', error);
+      alert('There was an error saving your details. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const whatsappMessage = `Hello! I have just paid ₹${amount} for the consultation. %0A%0AMy Details:%0A- Name: ${studentName}%0A- Phone: ${studentPhone}%0A- Transaction ID: ${transactionId}%0A%0APlease verify and call me back.`;
