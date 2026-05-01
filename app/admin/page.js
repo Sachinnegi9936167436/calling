@@ -41,20 +41,19 @@ export default function AdminPage() {
           <h1 className="name">Admin Login</h1>
           <p className="bio">Enter the password to view submissions.</p>
           
-          <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <input 
-                type="password" 
-                className="form-input" 
-                placeholder="Password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            {error && <p style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}
-            <button type="submit" className="pay-btn">Login</button>
-          </form>
+          <div className="form-group">
+            <input 
+              type="password" 
+              className="form-input" 
+              placeholder="Password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleLogin(e)}
+              required
+            />
+          </div>
+          {error && <p style={{ color: '#ef4444', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}
+          <button type="button" onClick={handleLogin} className="pay-btn">Login</button>
         </div>
       </div>
     );
@@ -92,7 +91,7 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {submissions.map((sub) => (
-                  <tr key={sub.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                  <tr key={sub._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <td style={{ padding: '1rem' }}>{new Date(sub.timestamp).toLocaleString()}</td>
                     <td style={{ padding: '1rem', fontWeight: 600 }}>{sub.studentName}</td>
                     <td style={{ padding: '1rem' }}>{sub.studentPhone}</td>
