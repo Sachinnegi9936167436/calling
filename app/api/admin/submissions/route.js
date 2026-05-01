@@ -4,7 +4,9 @@ import path from 'path';
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'submissions.json');
+    const isVercel = process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_URL;
+    const dirPath = isVercel ? '/tmp' : path.join(process.cwd(), 'data');
+    const filePath = path.join(dirPath, 'submissions.json');
     
     let fileContents = '[]';
     try {

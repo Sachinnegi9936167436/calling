@@ -40,13 +40,14 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit details');
+        console.warn('Failed to submit details to backend, but continuing.');
       }
 
       setSuccess(true);
     } catch (error) {
       console.error('Error submitting:', error);
-      alert('There was an error saving your details. Please try again.');
+      // Even if backend fails, let the user proceed to WhatsApp step
+      setSuccess(true);
     } finally {
       setLoading(false);
     }

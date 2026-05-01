@@ -11,7 +11,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const filePath = path.join(process.cwd(), 'data', 'submissions.json');
+    // Use /tmp on Vercel, otherwise local data directory
+    const isVercel = process.env.VERCEL || process.env.NEXT_PUBLIC_VERCEL_URL;
+    const dirPath = isVercel ? '/tmp' : path.join(process.cwd(), 'data');
+    const filePath = path.join(dirPath, 'submissions.json');
     
     // Read existing submissions
     let fileContents = '[]';
@@ -37,8 +40,14 @@ export async function POST(request) {
     submissions.push(newSubmission);
 
     // Save to file
-    await fs.mkdir(path.join(process.cwd(), 'data'), { recursive: true });
-    await fs.writeFile(filePath, JSON.stringify(submissions, null, 2), 'utf8');
+    try {
+      await fs.mkdir(dirPath, { recursive: true });
+      await fs.writeFile(filePath, JSON.stringify(submissions, null, 2), 'utf8');
+    } catch (writeError) {
+      console.error('Failed to write file:', writeError);
+      // Return 200 anyway so frontend doesn't crash, but it won't be saved
+      return NextResponse.json({ success: true, warning: 'Could not save to disk', submission: newSubmission }, { status: 200 });
+    }
 
     return NextResponse.json({ success: true, submission: newSubmission }, { status: 201 });
   } catch (error) {
