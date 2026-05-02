@@ -73,7 +73,26 @@ export default function Home() {
 
             <div className="payment-instructions">
               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Pay ₹{amount} to this UPI ID:</p>
-              <div className="upi-id">{creatorUPI}</div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <div className="upi-id">{creatorUPI}</div>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(creatorUPI);
+                    alert('UPI ID copied to clipboard!');
+                  }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '8px',
+                    padding: '4px 8px',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '0.75rem'
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
 
               {/* QR Code for Desktop users to scan */}
               <div style={{ marginTop: '1.5rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
