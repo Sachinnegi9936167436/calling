@@ -1,124 +1,130 @@
 "use client";
 
 import { useState } from 'react';
-import Script from 'next/script';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [studentPhone, setStudentPhone] = useState('');
   const [studentName, setStudentName] = useState('');
+  const [transactionId, setTransactionId] = useState('');
 
   // YOUR DETAILS - Update these
+  const creatorUPI = "abhisheksingh17nasa8@okhdfcbank"; 
   const creatorWhatsApp = "8218978921"; 
-  const amount = "20"; 
+  const amount = "20"; // Updated to 20 as per your change
 
-  const handlePayment = async (e) => {
+  const upiLink = `upi://pay?pa=${creatorUPI}&pn=Consultation&am=${amount}&cu=INR`;
+
+  const handleSubmitDetails = async (e) => {
     e.preventDefault();
-    if (!studentName || !studentPhone) {
+    if (!studentName || !studentPhone || !transactionId) {
       alert("Please fill in all details");
       return;
     }
 
     setLoading(true);
-
+    
     try {
-      // 1. Create Razorpay Order
-      const orderRes = await fetch('/api/razorpay/order', {
+      const response = await fetch('/api/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          studentName,
+          studentPhone,
+          transactionId,
+          amount
+        }),
       });
 
-      if (!orderRes.ok) throw new Error('Failed to create order');
-      const orderData = await orderRes.json();
+      if (!response.ok) {
+        console.warn('Failed to submit details to backend, but continuing.');
+      }
 
-      // 2. Open Razorpay Checkout
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "SSB WITH ABHI",
-        description: "Consultation Fee",
-        order_id: orderData.id,
-        handler: async function (response) {
-          // 3. Verify Payment
-          const verifyRes = await fetch('/api/razorpay/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            }),
-          });
-
-          const verifyData = await verifyRes.json();
-
-          if (verifyData.success) {
-            // 4. Submit Details to DB
-            await fetch('/api/submit', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                studentName,
-                studentPhone,
-                transactionId: response.razorpay_payment_id,
-                amount
-              }),
-            });
-            setSuccess(true);
-          } else {
-            alert("Payment verification failed. Please contact support.");
-          }
-          setLoading(false);
-        },
-        prefill: {
-          name: studentName,
-          contact: studentPhone,
-        },
-        theme: {
-          color: "#8b5cf6",
-        },
-        modal: {
-          ondismiss: function () {
-            setLoading(false);
-          }
-        }
-      };
-
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
-
+      setSuccess(true);
     } catch (error) {
-      console.error('Error in payment flow:', error);
-      alert("Something went wrong. Please try again.");
+      console.error('Error submitting:', error);
+      // Even if backend fails, let the user proceed to WhatsApp step
+      setSuccess(true);
+    } finally {
       setLoading(false);
     }
   };
 
-  const whatsappMessage = `Hello! I have just paid ₹${amount} for the consultation via Razorpay. %0A%0AMy Details:%0A- Name: ${studentName}%0A- Phone: ${studentPhone}%0A%0APlease verify and call me back.`;
+  const whatsappMessage = `Hello! I have just paid ₹${amount} for the consultation. %0A%0AMy Details:%0A- Name: ${studentName}%0A- Phone: ${studentPhone}%0A- Transaction ID: ${transactionId}%0A%0APlease verify and call me back.`;
 
   return (
     <div className="container">
-      <Script
-        id="razorpay-checkout-js"
-        src="https://checkout.razorpay.com/v1/checkout.js"
-      />
-      
       <div className="glass-card">
         {!success ? (
           <>
+
+            
             <h1 className="name">SSB WITH ABHI</h1>
             <p className="bio" style={{ marginBottom: '1rem' }}>
-              Book your consultation session now. Secure payment via Razorpay.
+              Pay the consultation fee manually to get a direct call from me.
             </p>
 
             <div className="price-tag">
               Consultation Fee: ₹{amount}
             </div>
 
-            <form onSubmit={handlePayment}>
+            <div className="payment-instructions">
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Pay ₹{amount} to this UPI ID:</p>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                <div className="upi-id">{creatorUPI}</div>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(creatorUPI);
+                    alert('UPI ID copied to clipboard!');
+                  }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '8px',
+                    padding: '4px 8px',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '0.75rem'
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+
+              {/* QR Code for Desktop users to scan */}
+              <div style={{ marginTop: '1.5rem', marginBottom: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Scan QR code to pay:</p>
+                <div style={{ background: 'white', padding: '10px', borderRadius: '12px', display: 'inline-block', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                  <img src="/qrcode.png" alt="Payment QR Code" style={{ width: '200px', height: '200px', objectFit: 'contain', borderRadius: '8px' }} />
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Works with any UPI app</p>
+              </div>
+              
+              <a 
+                href={upiLink}
+                className="pay-btn"
+                style={{ 
+                  marginTop: '1rem', 
+                  textDecoration: 'none', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  gap: '8px',
+                  background: 'linear-gradient(135deg, #8b5cf6, #ec4899)'
+                }}
+              >
+                📲 Pay Now (GPay/PhonePe)
+              </a>
+
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                (Take a screenshot after payment)
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmitDetails}>
               <div className="form-group">
                 <label className="form-label">Your Name</label>
                 <input 
@@ -143,30 +149,33 @@ export default function Home() {
                 />
               </div>
 
+              <div className="form-group">
+                <label className="form-label">Transaction ID / UTR Number</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="Enter 12-digit UTR or Transaction ID" 
+                  value={transactionId}
+                  onChange={(e) => setTransactionId(e.target.value)}
+                  required
+                />
+              </div>
+
               <button 
                 type="submit"
                 className="pay-btn" 
                 disabled={loading}
-                style={{ 
-                  marginTop: '1rem',
-                  background: 'linear-gradient(135deg, #8b5cf6, #ec4899)'
-                }}
               >
-                {loading ? <div className="loader"></div> : "Pay & Book Consultation"}
+                {loading ? <div className="loader"></div> : "Submit Details"}
               </button>
             </form>
-
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '1rem', textAlign: 'center' }}>
-              Secured by Razorpay. All major UPI apps, Cards, and Netbanking supported.
-            </p>
           </>
         ) : (
           <div className="success-container">
             <div className="success-icon">✓</div>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Payment Successful!</h2>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Details Submitted!</h2>
             <p style={{ color: 'var(--text-muted)', textAlign: 'center', lineHeight: '1.6' }}>
-              Thank you, <strong>{studentName}</strong>! Your consultation has been booked. 
-              Please click below to notify me on WhatsApp for immediate scheduling.
+              Final Step: Please click the button below to send your payment details to me on WhatsApp for instant verification.
             </p>
             
             <a 
@@ -183,11 +192,11 @@ export default function Home() {
                 gap: '10px'
               }}
             >
-              <span style={{ fontSize: '1.2rem' }}>💬</span> Notify on WhatsApp
+              <span style={{ fontSize: '1.2rem' }}>💬</span> Confirm on WhatsApp
             </a>
 
             <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-              I will verify the booking and call you at <strong>{studentPhone}</strong> shortly.
+              Once you send the message, I will verify the payment and call <strong>{studentName}</strong> at <strong>{studentPhone}</strong>.
             </div>
           </div>
         )}
@@ -195,4 +204,3 @@ export default function Home() {
     </div>
   );
 }
-
