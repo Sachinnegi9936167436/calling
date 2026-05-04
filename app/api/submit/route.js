@@ -18,7 +18,7 @@ export async function POST(request) {
       studentName,
       studentPhone,
       transactionId,
-      amount: amount || '30',
+      amount: amount || '50',
     });
 
     return NextResponse.json({ success: true, submission: newSubmission }, { status: 201 });
