@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -200,6 +201,69 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        <div style={{ 
+          marginTop: '2rem', 
+          paddingTop: '1.5rem', 
+          borderTop: '1px solid var(--card-border)',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '15px',
+          flexWrap: 'wrap'
+        }}>
+          <Link 
+            href="/contact" 
+            style={{ 
+              color: 'var(--text-muted)', 
+              textDecoration: 'none', 
+              fontSize: '0.875rem',
+              transition: 'color 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.color = 'var(--text-main)'}
+            onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}
+          >
+            Contact
+          </Link>
+          <Link 
+            href="/privacy" 
+            style={{ 
+              color: 'var(--text-muted)', 
+              textDecoration: 'none', 
+              fontSize: '0.875rem',
+              transition: 'color 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.color = 'var(--text-main)'}
+            onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}
+          >
+            Privacy
+          </Link>
+          <Link 
+            href="/terms" 
+            style={{ 
+              color: 'var(--text-muted)', 
+              textDecoration: 'none', 
+              fontSize: '0.875rem',
+              transition: 'color 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.color = 'var(--text-main)'}
+            onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}
+          >
+            Terms
+          </Link>
+          <Link 
+            href="/refund" 
+            style={{ 
+              color: 'var(--text-muted)', 
+              textDecoration: 'none', 
+              fontSize: '0.875rem',
+              transition: 'color 0.2s'
+            }}
+            onMouseOver={(e) => e.target.style.color = 'var(--text-main)'}
+            onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}
+          >
+            Refund
+          </Link>
+        </div>
       </div>
     </div>
   );

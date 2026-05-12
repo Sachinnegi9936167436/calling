@@ -6,6 +6,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [submissions, setSubmissions] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [activeTab, setActiveTab] = useState('submissions'); // 'submissions', 'messages'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +19,7 @@ export default function AdminPage() {
     if (session === 'money') {
       setIsAuthenticated(true);
       fetchSubmissions();
+      fetchContacts();
     }
   }, []);
 
@@ -26,6 +29,7 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       localStorage.setItem('admin_session', 'money');
       fetchSubmissions();
+      fetchContacts();
     } else {
       setError('Invalid password');
     }
@@ -49,6 +53,34 @@ export default function AdminPage() {
       setError('Failed to load submissions');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchContacts = async () => {
+    try {
+      const res = await fetch('/api/admin/contacts');
+      if (!res.ok) throw new Error('Failed to fetch contacts');
+      const data = await res.json();
+      setContacts(data.contacts);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteContact = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this message?')) return;
+    
+    try {
+      const res = await fetch(`/api/admin/contacts/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!res.ok) throw new Error('Failed to delete');
+      
+      setContacts(contacts.filter(c => c._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting message');
     }
   };
 
@@ -107,12 +139,23 @@ export default function AdminPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const filteredContacts = contacts.filter(c => {
+    const term = searchTerm.toLowerCase();
+    return (
+      c.name.toLowerCase().includes(term) ||
+      c.email.toLowerCase().includes(term) ||
+      c.subject.toLowerCase().includes(term) ||
+      c.message.toLowerCase().includes(term)
+    );
+  });
+
   // Calculate Stats
   const stats = {
     total: submissions.length,
     revenue: submissions.reduce((acc, sub) => acc + (parseFloat(sub.amount) || 0), 0),
     pending: submissions.filter(s => !s.contacted).length,
-    contacted: submissions.filter(s => s.contacted).length
+    contacted: submissions.filter(s => s.contacted).length,
+    messages: contacts.length
   };
 
   if (!isAuthenticated) {
@@ -150,13 +193,49 @@ export default function AdminPage() {
           <p className="bio" style={{ margin: 0, textAlign: 'left' }}>Manage your payment submissions</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button onClick={fetchSubmissions} className="pay-btn" style={{ width: 'auto', padding: '0.6rem 1.2rem', fontSize: '0.875rem', background: 'rgba(255,255,255,0.1)' }}>
+          <button onClick={() => { fetchSubmissions(); fetchContacts(); }} className="pay-btn" style={{ width: 'auto', padding: '0.6rem 1.2rem', fontSize: '0.875rem', background: 'rgba(255,255,255,0.1)' }}>
             {loading ? '...' : 'Refresh'}
           </button>
           <button onClick={handleLogout} className="pay-btn" style={{ width: 'auto', padding: '0.6rem 1.2rem', fontSize: '0.875rem', background: '#ef4444' }}>
             Logout
           </button>
         </div>
+      </div>
+
+      {/* Tab Switcher */}
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+        <button 
+          onClick={() => setActiveTab('submissions')}
+          style={{
+            flex: 1,
+            padding: '1rem',
+            borderRadius: '12px',
+            border: 'none',
+            background: activeTab === 'submissions' ? 'var(--accent-primary)' : 'rgba(255,255,255,0.05)',
+            color: 'white',
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+        >
+          💳 Submissions ({stats.total})
+        </button>
+        <button 
+          onClick={() => setActiveTab('messages')}
+          style={{
+            flex: 1,
+            padding: '1rem',
+            borderRadius: '12px',
+            border: 'none',
+            background: activeTab === 'messages' ? 'var(--accent-primary)' : 'rgba(255,255,255,0.05)',
+            color: 'white',
+            fontWeight: 600,
+            cursor: 'pointer',
+            transition: 'all 0.2s'
+          }}
+        >
+          ✉️ Messages ({stats.messages})
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -219,76 +298,143 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Main Table */}
+      {/* Main Content */}
       <div className="glass-card" style={{ maxWidth: '100%', padding: '1.5rem' }}>
-        {loading && submissions.length === 0 ? (
-          <div className="loader"></div>
-        ) : filteredSubmissions.length === 0 ? (
-          <p className="bio">No matching submissions found.</p>
+        {activeTab === 'submissions' ? (
+          <>
+            {loading && submissions.length === 0 ? (
+              <div className="loader"></div>
+            ) : filteredSubmissions.length === 0 ? (
+              <p className="bio">No matching submissions found.</p>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Date</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Name</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Phone</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Transaction ID</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Amount</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Status</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredSubmissions.map((sub) => (
+                      <tr key={sub._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{new Date(sub.timestamp).toLocaleString()}</td>
+                        <td style={{ padding: '1rem', fontWeight: 600 }}>{sub.studentName}</td>
+                        <td style={{ padding: '1rem' }}>{sub.studentPhone}</td>
+                        <td style={{ padding: '1rem', fontFamily: 'monospace', color: 'var(--accent-primary)', fontSize: '0.875rem' }}>{sub.transactionId}</td>
+                        <td style={{ padding: '1rem', color: 'var(--success-color)', fontWeight: 600 }}>₹{sub.amount}</td>
+                        <td style={{ padding: '1rem' }}>
+                          <button 
+                            onClick={() => toggleStatus(sub._id, sub.contacted)}
+                            style={{
+                              background: sub.contacted ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)',
+                              color: sub.contacted ? '#22c55e' : '#eab308',
+                              border: `1px solid ${sub.contacted ? 'rgba(34, 197, 94, 0.2)' : 'rgba(234, 179, 8, 0.2)'}`,
+                              padding: '0.4rem 0.8rem',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '0.75rem',
+                              fontWeight: 600,
+                              width: '100px',
+                              textAlign: 'center',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            {sub.contacted ? 'Contacted' : 'Pending'}
+                          </button>
+                        </td>
+                        <td style={{ padding: '1rem', textAlign: 'center' }}>
+                          <button 
+                            onClick={() => handleDelete(sub._id)}
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.1)',
+                              color: '#ef4444',
+                              border: '1px solid rgba(239, 68, 68, 0.2)',
+                              padding: '0.4rem 0.8rem',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '0.875rem',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Date</th>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Name</th>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Phone</th>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Transaction ID</th>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Amount</th>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Status</th>
-                  <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSubmissions.map((sub) => (
-                  <tr key={sub._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{new Date(sub.timestamp).toLocaleString()}</td>
-                    <td style={{ padding: '1rem', fontWeight: 600 }}>{sub.studentName}</td>
-                    <td style={{ padding: '1rem' }}>{sub.studentPhone}</td>
-                    <td style={{ padding: '1rem', fontFamily: 'monospace', color: 'var(--accent-primary)', fontSize: '0.875rem' }}>{sub.transactionId}</td>
-                    <td style={{ padding: '1rem', color: 'var(--success-color)', fontWeight: 600 }}>₹{sub.amount}</td>
-                    <td style={{ padding: '1rem' }}>
-                      <button 
-                        onClick={() => toggleStatus(sub._id, sub.contacted)}
-                        style={{
-                          background: sub.contacted ? 'rgba(34, 197, 94, 0.1)' : 'rgba(234, 179, 8, 0.1)',
-                          color: sub.contacted ? '#22c55e' : '#eab308',
-                          border: `1px solid ${sub.contacted ? 'rgba(34, 197, 94, 0.2)' : 'rgba(234, 179, 8, 0.2)'}`,
-                          padding: '0.4rem 0.8rem',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          width: '100px',
-                          textAlign: 'center',
-                          transition: 'all 0.2s'
-                        }}
-                      >
-                        {sub.contacted ? 'Contacted' : 'Pending'}
-                      </button>
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <button 
-                        onClick={() => handleDelete(sub._id)}
-                        style={{
-                          background: 'rgba(239, 68, 68, 0.1)',
-                          color: '#ef4444',
-                          border: '1px solid rgba(239, 68, 68, 0.2)',
-                          padding: '0.4rem 0.8rem',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontSize: '0.875rem',
-                          transition: 'all 0.2s'
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <>
+            {loading && contacts.length === 0 ? (
+              <div className="loader"></div>
+            ) : filteredContacts.length === 0 ? (
+              <p className="bio">No messages found.</p>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Date</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>From</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Subject</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Message</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredContacts.map((contact) => (
+                      <tr key={contact._id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                        <td style={{ padding: '1rem', fontSize: '0.875rem' }}>{new Date(contact.timestamp).toLocaleString()}</td>
+                        <td style={{ padding: '1rem' }}>
+                          <div style={{ fontWeight: 600 }}>{contact.name}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{contact.email}</div>
+                        </td>
+                        <td style={{ padding: '1rem', fontWeight: 500 }}>{contact.subject}</td>
+                        <td style={{ padding: '1rem', fontSize: '0.875rem', maxWidth: '300px' }}>
+                          <div style={{ 
+                            whiteSpace: 'pre-wrap', 
+                            maxHeight: '100px', 
+                            overflowY: 'auto',
+                            background: 'rgba(0,0,0,0.1)',
+                            padding: '0.5rem',
+                            borderRadius: '8px'
+                          }}>
+                            {contact.message}
+                          </div>
+                        </td>
+                        <td style={{ padding: '1rem', textAlign: 'center' }}>
+                          <button 
+                            onClick={() => handleDeleteContact(contact._id)}
+                            style={{
+                              background: 'rgba(239, 68, 68, 0.1)',
+                              color: '#ef4444',
+                              border: '1px solid rgba(239, 68, 68, 0.2)',
+                              padding: '0.4rem 0.8rem',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '0.875rem',
+                              transition: 'all 0.2s'
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
