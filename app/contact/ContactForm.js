@@ -9,6 +9,7 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    mobile: '',
     subject: '',
     message: ''
   });
@@ -35,7 +36,7 @@ export default function ContactForm() {
 
       if (response.ok) {
         setSuccess(true);
-        setFormData({ name: '', email: '', subject: '', message: '' });
+        setFormData({ name: '', email: '', mobile: '', subject: '', message: '' });
       } else {
         alert('Failed to send message. Please try again.');
       }
@@ -99,6 +100,21 @@ export default function ContactForm() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+              />
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Mobile</label>
+              <input 
+                type="text" 
+                name="mobile"
+                id="contact-mobile"
+                className="form-input" 
+                placeholder="your mobile number" 
+                value={formData.mobile}
+                onChange={handleChange}
+                required
+                
               />
             </div>
 
