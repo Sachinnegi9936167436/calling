@@ -189,27 +189,58 @@ export default function Home() {
 
                 <div className="payment-instructions">
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600' }}>Pay ₹{amount} to this UPI ID:</p>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', margin: '0.5rem 0' }}>
-                    <div className="upi-id">{creatorUPI}</div>
-                    <button 
-                      onClick={() => {
-                        navigator.clipboard.writeText(creatorUPI);
-                        alert('UPI ID copied to clipboard!');
-                      }}
-                      style={{
-                        background: 'var(--accent-primary)',
-                        border: 'none',
-                        borderRadius: '8px',
-                        padding: '6px 12px',
-                        color: 'white',
-                        cursor: 'pointer',
-                        fontSize: '0.75rem',
-                        fontWeight: '700'
-                      }}
-                    >
-                      📋 Copy
-                    </button>
-                  </div>
+                    <div className="upi-id-wrapper" style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '12px', 
+                      margin: '1.5rem 0',
+                      background: 'white',
+                      padding: '12px 20px',
+                      borderRadius: '16px',
+                      border: '1px solid #e2e8f0',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+                    }}>
+                      <div className="upi-id" style={{ 
+                        margin: 0, 
+                        background: 'transparent', 
+                        border: 'none', 
+                        padding: 0,
+                        fontSize: '1.125rem',
+                        fontWeight: '700',
+                        color: 'var(--accent-primary)',
+                        letterSpacing: '0.5px'
+                      }}>{creatorUPI}</div>
+                      <button 
+                        onClick={(e) => {
+                          navigator.clipboard.writeText(creatorUPI);
+                          const btn = e.currentTarget;
+                          const originalText = btn.innerHTML;
+                          btn.innerHTML = '✅ Copied!';
+                          btn.style.background = 'var(--success-color)';
+                          setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.style.background = 'var(--accent-primary)';
+                          }, 2000);
+                        }}
+                        style={{
+                          background: 'var(--accent-primary)',
+                          border: 'none',
+                          borderRadius: '10px',
+                          padding: '8px 16px',
+                          color: 'white',
+                          cursor: 'pointer',
+                          fontSize: '0.875rem',
+                          fontWeight: '700',
+                          transition: 'all 0.2s ease',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}
+                      >
+                        📋 Copy
+                      </button>
+                    </div>
                   
                   <a 
                     href={upiLink}
