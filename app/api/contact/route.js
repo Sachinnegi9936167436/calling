@@ -5,9 +5,9 @@ import Contact from '@/models/Contact';
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { name, email, subject, message } = data;
+    const { name, email, mobile, subject, message } = data;
 
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !mobile || !subject || !message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -16,6 +16,7 @@ export async function POST(request) {
     const newContact = await Contact.create({
       name,
       email,
+      mobile,
       subject,
       message,
     });

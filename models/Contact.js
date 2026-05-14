@@ -9,6 +9,10 @@ const ContactSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide an email'],
   },
+  mobile: {
+    type: String,
+    required: [true, 'Please provide a mobile number'],
+  },
   subject: {
     type: String,
     required: [true, 'Please provide a subject'],

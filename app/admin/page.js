@@ -144,6 +144,7 @@ export default function AdminPage() {
     return (
       c.name.toLowerCase().includes(term) ||
       c.email.toLowerCase().includes(term) ||
+      c.mobile?.toLowerCase().includes(term) ||
       c.subject.toLowerCase().includes(term) ||
       c.message.toLowerCase().includes(term)
     );
@@ -385,6 +386,7 @@ export default function AdminPage() {
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                       <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Date</th>
                       <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>From</th>
+                      <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Mobile</th>
                       <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Subject</th>
                       <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500 }}>Message</th>
                       <th style={{ padding: '1rem', color: 'var(--text-muted)', fontWeight: 500, textAlign: 'center' }}>Action</th>
@@ -397,6 +399,9 @@ export default function AdminPage() {
                         <td style={{ padding: '1rem' }}>
                           <div style={{ fontWeight: 600 }}>{contact.name}</div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{contact.email}</div>
+                        </td>
+                        <td style={{ padding: '1rem' }}>
+                          <div style={{ fontWeight: 500 }}>{contact.mobile}</div>
                         </td>
                         <td style={{ padding: '1rem', fontWeight: 500 }}>{contact.subject}</td>
                         <td style={{ padding: '1rem', fontSize: '0.875rem', maxWidth: '300px' }}>
