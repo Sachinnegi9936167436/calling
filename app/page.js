@@ -64,7 +64,7 @@ export default function Home() {
             Master Your SSB Interview with <span className="gradient-text">Personalized Guidance</span>
           </h1>
           <p className="hero-subtitle">
-            Don't leave your selection to chance. Get direct mentorship, mock interviews, and psychological evaluation from an expert.
+            Don't leave your selection to chance. Get direct mentorship, psychology evaluation, and strategic guidance from an expert.
           </p>
           <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a href="#consult" className="pay-btn" style={{ minWidth: '220px' }}>Get Started Now</a>
@@ -86,7 +86,7 @@ export default function Home() {
             About <span className="gradient-text">SSB WITH ABHI</span>
           </h2>
           <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem' }}>
-            I am Abhi, your mentor for SSB. I've helped numerous candidates clear their selection board with practical tips and mock interviews.
+            I am Abhi, your mentor for SSB. I've helped numerous candidates clear their selection board with practical tips and personalized evaluation.
           </p>
           <div className="grid">
             <div className="feature-card">
@@ -117,11 +117,6 @@ export default function Home() {
             Everything you need to excel in your Services Selection Board (SSB) interview.
           </p>
           <div className="grid">
-            <div className="feature-card">
-              <div className="feature-icon">🎤</div>
-              <h3>Mock Interviews</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>One-on-one personal interview sessions with detailed feedback to refine your responses and body language.</p>
-            </div>
             <div className="feature-card">
               <div className="feature-icon">🧠</div>
               <h3>Psych Evaluation</h3>

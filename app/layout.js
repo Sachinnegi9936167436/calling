@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata = {
   title: 'SSB WITH ABHI | Premium Personal Consultancy for Defence Aspirants',
-  description: 'Get personalized guidance and consultancy for SSB interviews from Abhi. Mock interviews, PPDT, psychology tests, and more.',
+  description: 'Get personalized guidance and consultancy for SSB interviews from Abhi. PPDT, psychology tests, and strategic guidance.',
 };
 
 export default function RootLayout({ children }) {
