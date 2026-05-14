@@ -101,19 +101,42 @@ body::after {
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-primary);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 
 .nav-link:hover {
   color: var(--accent-primary);
 }
 
-/* Sections */
+/* Sections Reveal Animation */
 section {
   padding: 8rem 2rem;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: sectionReveal 1s forwards;
+}
+
+@keyframes sectionReveal {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .section-container {
@@ -123,6 +146,7 @@ section {
   position: relative;
 }
 
+/* Hero Section Animations */
 .hero {
   padding-top: calc(var(--nav-height) + 6rem);
   text-align: center;
@@ -137,12 +161,18 @@ section {
   margin-bottom: 1.5rem;
   color: var(--text-main);
   letter-spacing: -0.02em;
+  overflow: hidden;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.hero-title span.reveal-text {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  animation: revealText 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes revealText {
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .hero-subtitle {
@@ -151,6 +181,18 @@ section {
   max-width: 700px;
   margin: 0 auto 3.5rem;
   font-weight: 500;
+  opacity: 0;
+  animation: fadeIn 1s 0.8s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Grid Layouts */
@@ -161,7 +203,7 @@ section {
   margin-top: 4rem;
 }
 
-/* NEW PREMIUM FEATURE CARD ANIMATION */
+/* Feature Card */
 .feature-card {
   position: relative;
   background: white;
@@ -171,15 +213,8 @@ section {
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   z-index: 1;
-  opacity: 0;
-  animation: fadeInUp 0.8s forwards;
 }
 
-.feature-card:nth-child(1) { animation-delay: 0.1s; }
-.feature-card:nth-child(2) { animation-delay: 0.3s; }
-.feature-card:nth-child(3) { animation-delay: 0.5s; }
-
-/* Rotating Border Effect */
 .feature-card::before {
   content: '';
   position: absolute;
@@ -217,11 +252,6 @@ section {
   to { transform: rotate(360deg); }
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .feature-card:hover {
   transform: translateY(-15px) scale(1.02);
   box-shadow: 0 30px 60px -12px rgba(99, 102, 241, 0.25);
@@ -247,10 +277,74 @@ section {
   color: white;
 }
 
-.feature-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+/* Shimmer Button Effect */
+.pay-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  border: none;
+  padding: 1.25rem;
+  border-radius: 20px;
+  font-size: 1.125rem;
   font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+  display: inline-block;
+  text-decoration: none;
+}
+
+.pay-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    transparent,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent,
+    transparent
+  );
+  transform: rotate(45deg);
+  transition: 0.5s;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; top: -100%; }
+  100% { left: 100%; top: 100%; }
+}
+
+.pay-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
+  filter: brightness(1.1);
+}
+
+/* Form Field Animations */
+.form-input {
+  width: 100%;
+  padding: 1.125rem 1.25rem;
+  border-radius: 16px;
+  border: 2px solid #e2e8f0;
+  background: white;
+  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  transform: scale(1.01);
 }
 
 /* How it Works */
@@ -259,6 +353,18 @@ section {
   padding-left: 4.5rem;
   margin-bottom: 3.5rem;
   text-align: left;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: slideInLeft 0.8s forwards;
+}
+
+.step-item:nth-child(1) { animation-delay: 0.1s; }
+.step-item:nth-child(2) { animation-delay: 0.3s; }
+.step-item:nth-child(3) { animation-delay: 0.5s; }
+.step-item:nth-child(4) { animation-delay: 0.7s; }
+
+@keyframes slideInLeft {
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .step-number {
@@ -276,12 +382,11 @@ section {
   font-weight: 800;
   font-size: 1.25rem;
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
 }
 
-.step-item h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
+.step-item:hover .step-number {
+  transform: scale(1.1) rotate(-10deg);
 }
 
 /* Consultation Card */
@@ -310,118 +415,6 @@ section {
   border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
-.pay-btn {
-  width: 100%;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: white;
-  border: none;
-  padding: 1.25rem;
-  border-radius: 20px;
-  font-size: 1.125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-  display: inline-block;
-  text-decoration: none;
-}
-
-.pay-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(99, 102, 241, 0.5);
-  filter: brightness(1.1);
-}
-
-.pay-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.success-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.success-icon {
-  width: 80px;
-  height: 80px;
-  background: #ecfdf5;
-  color: var(--success-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  border: 4px solid #d1fae5;
-}
-
-.payment-instructions {
-  background: #f1f5f9;
-  padding: 2rem;
-  border-radius: 24px;
-  margin-bottom: 2.5rem;
-  text-align: center;
-}
-
-.upi-id-wrapper {
-  transition: all 0.3s ease;
-}
-
-.upi-id-wrapper:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  border-color: var(--accent-primary) !important;
-}
-
-.upi-id {
-  font-family: monospace;
-  word-break: break-all;
-}
-
-
-.form-group {
-  text-align: left;
-  margin-bottom: 1.5rem;
-}
-
-.form-label {
-  display: block;
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-bottom: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.form-input {
-  width: 100%;
-  padding: 1.125rem 1.25rem;
-  border-radius: 16px;
-  border: 2px solid #e2e8f0;
-  background: white;
-  color: var(--text-main);
-  font-size: 1rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-}
-
 /* Footer */
 footer {
   padding: 6rem 2rem;
@@ -429,25 +422,6 @@ footer {
   border-top: 1px solid #f1f5f9;
   text-align: center;
   width: 100%;
-}
-
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  margin-bottom: 3rem;
-}
-
-.footer-link {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  transition: color 0.2s;
-}
-
-.footer-link:hover {
-  color: var(--accent-primary);
 }
 
 /* Mobile Adjustments */
@@ -462,9 +436,5 @@ footer {
   
   section {
     padding: 6rem 1.5rem;
-  }
-  
-  .glass-card {
-    padding: 3rem 1.5rem;
   }
 }
