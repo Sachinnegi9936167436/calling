@@ -12,7 +12,7 @@ export default function Home() {
   // YOUR DETAILS
   const creatorUPI = "abhisheksingh17nasa8@okhdfcbank"; 
   const creatorWhatsApp = "8218978921"; 
-  const amount = "50"; 
+  const amount = "10"; 
 
   const upiLink = `upi://pay?pa=${creatorUPI}&pn=Consultation&am=${amount}&cu=INR`;
 
