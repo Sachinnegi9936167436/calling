@@ -60,33 +60,46 @@ export default function Home() {
       {/* Hero Section */}
       <section className="hero">
         <div className="section-container">
-          <h1 className="hero-title">Master Your SSB Interview with Personalized Guidance</h1>
+          <h1 className="hero-title">
+            Master Your SSB Interview with <span className="gradient-text">Personalized Guidance</span>
+          </h1>
           <p className="hero-subtitle">
             Don't leave your selection to chance. Get direct mentorship, mock interviews, and psychological evaluation from an expert.
           </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <a href="#consult" className="pay-btn" style={{ maxWidth: '250px' }}>Get Started Now</a>
-            <a href="#services" className="pay-btn" style={{ maxWidth: '250px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}>Learn More</a>
+          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="#consult" className="pay-btn" style={{ minWidth: '220px' }}>Get Started Now</a>
+            <a href="#services" className="pay-btn" style={{ 
+              minWidth: '220px', 
+              background: 'white', 
+              color: 'var(--accent-primary)',
+              border: '2px solid var(--accent-primary)',
+              boxShadow: 'none'
+            }}>Explore Services</a>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <section id="about" style={{ background: 'white' }}>
         <div className="section-container">
-          <h2 className="name" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '2rem' }}>About SSB WITH ABHI</h2>
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+            About <span className="gradient-text">SSB WITH ABHI</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem' }}>
+            I am Abhi, your mentor for SSB. I've helped numerous candidates clear their selection board with practical tips and mock interviews.
+          </p>
           <div className="grid">
             <div className="feature-card">
               <div className="feature-icon">🎓</div>
               <h3>Expert Mentorship</h3>
-              <p className="bio" style={{ marginBottom: 0 }}>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>
                 Personalized guidance tailored to your strengths and weaknesses. I focus on building your confidence and officer-like qualities (OLQs).
               </p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">📊</div>
               <h3>Proven Strategy</h3>
-              <p className="bio" style={{ marginBottom: 0 }}>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>
                 Learn the exact methods to crack PPDT, WAT, TAT, and SRT. No more confusion, just clear, actionable steps for success.
               </p>
             </div>
@@ -97,59 +110,63 @@ export default function Home() {
       {/* Services Section */}
       <section id="services">
         <div className="section-container">
-          <h2 className="name" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>Our Services</h2>
-          <p className="bio" style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 3rem' }}>
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
+            Our <span className="gradient-text">Premium Services</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem' }}>
             Everything you need to excel in your Services Selection Board (SSB) interview.
           </p>
           <div className="grid">
             <div className="feature-card">
               <div className="feature-icon">🎤</div>
               <h3>Mock Interviews</h3>
-              <p className="bio" style={{ marginBottom: 0 }}>One-on-one personal interview sessions with detailed feedback to refine your responses and body language.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>One-on-one personal interview sessions with detailed feedback to refine your responses and body language.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">🧠</div>
               <h3>Psych Evaluation</h3>
-              <p className="bio" style={{ marginBottom: 0 }}>Evaluation of your TAT, WAT, and SRT responses to ensure they reflect your true potential and OLQs.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Evaluation of your TAT, WAT, and SRT responses to ensure they reflect your true potential and OLQs.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">🖼️</div>
               <h3>PPDT & GPE</h3>
-              <p className="bio" style={{ marginBottom: 0 }}>Learn how to write impactful stories for PPDT and lead effectively during Group Planning Exercises.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Learn how to write impactful stories for PPDT and lead effectively during Group Planning Exercises.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">📞</div>
               <h3>24/7 Support</h3>
-              <p className="bio" style={{ marginBottom: 0 }}>Direct access to me via WhatsApp for any queries during your preparation journey.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Direct access to me via WhatsApp for any queries during your preparation journey.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* How it Works Section */}
-      <section id="how-it-works" style={{ background: 'rgba(255,255,255,0.02)' }}>
+      <section id="how-it-works" style={{ background: 'white' }}>
         <div className="section-container">
-          <h2 className="name" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem' }}>How It Works</h2>
-          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem' }}>
+            How It <span className="gradient-text">Works</span>
+          </h2>
+          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
             <div className="step-item">
               <div className="step-number">1</div>
               <h3>Pay Consultation Fee</h3>
-              <p className="bio">Pay a nominal fee of ₹{amount} via UPI to book your session. This ensures serious candidates get the time they deserve.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Pay a nominal fee of ₹{amount} via UPI to book your session. This ensures serious candidates get the time they deserve.</p>
             </div>
             <div className="step-item">
               <div className="step-number">2</div>
               <h3>Fill Your Details</h3>
-              <p className="bio">Submit your name, phone number, and transaction ID in the form below so I can verify your payment.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Submit your name, phone number, and transaction ID in the form below so I can verify your payment.</p>
             </div>
             <div className="step-item">
               <div className="step-number">3</div>
               <h3>WhatsApp Confirmation</h3>
-              <p className="bio">Click the WhatsApp button to send your details directly. This speeds up the verification process.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Click the WhatsApp button to send your details directly. This speeds up the verification process.</p>
             </div>
             <div className="step-item">
               <div className="step-number">4</div>
               <h3>Personalized Call</h3>
-              <p className="bio">Once verified, I will personally call you within 24-48 hours to start your mentorship journey.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Once verified, I will personally call you within 24-48 hours to start your mentorship journey.</p>
             </div>
           </div>
         </div>
@@ -161,8 +178,8 @@ export default function Home() {
           <div className="glass-card">
             {!success ? (
               <>
-                <h2 className="name">Get Your Personal Call</h2>
-                <p className="bio" style={{ marginBottom: '1.5rem' }}>
+                <h2 className="hero-title" style={{ fontSize: '2rem', marginBottom: '1rem' }}>Get Your <span className="gradient-text">Personal Call</span></h2>
+                <p className="bio" style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>
                   Fill the form after paying ₹{amount} to book your slot.
                 </p>
 
@@ -171,7 +188,7 @@ export default function Home() {
                 </div>
 
                 <div className="payment-instructions">
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Pay ₹{amount} to this UPI ID:</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600' }}>Pay ₹{amount} to this UPI ID:</p>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', margin: '0.5rem 0' }}>
                     <div className="upi-id">{creatorUPI}</div>
                     <button 
@@ -180,13 +197,14 @@ export default function Home() {
                         alert('UPI ID copied to clipboard!');
                       }}
                       style={{
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        background: 'var(--accent-primary)',
+                        border: 'none',
                         borderRadius: '8px',
-                        padding: '4px 8px',
+                        padding: '6px 12px',
                         color: 'white',
                         cursor: 'pointer',
-                        fontSize: '0.75rem'
+                        fontSize: '0.75rem',
+                        fontWeight: '700'
                       }}
                     >
                       📋 Copy
@@ -197,13 +215,11 @@ export default function Home() {
                     href={upiLink}
                     className="pay-btn"
                     style={{ 
-                      marginTop: '1rem', 
-                      textDecoration: 'none', 
+                      marginTop: '1.5rem', 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      gap: '8px',
-                      background: 'linear-gradient(135deg, #8b5cf6, #ec4899)'
+                      gap: '8px'
                     }}
                   >
                     📲 Pay Now (GPay/PhonePe)
@@ -252,15 +268,15 @@ export default function Home() {
                     className="pay-btn" 
                     disabled={loading}
                   >
-                    {loading ? <div className="loader"></div> : "Submit Details"}
+                    {loading ? <div className="loader" style={{ borderTopColor: 'white' }}></div> : "Submit Details"}
                   </button>
                 </form>
               </>
             ) : (
               <div className="success-container">
                 <div className="success-icon">✓</div>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Details Submitted!</h2>
-                <p style={{ color: 'var(--text-muted)', textAlign: 'center', lineHeight: '1.6' }}>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '0.5rem' }}>Details Submitted!</h2>
+                <p style={{ color: 'var(--text-muted)', textAlign: 'center', lineHeight: '1.6', fontSize: '1.125rem' }}>
                   Final Step: Please click the button below to send your payment details on WhatsApp for instant verification.
                 </p>
                 
@@ -275,13 +291,14 @@ export default function Home() {
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    gap: '10px'
+                    gap: '10px',
+                    boxShadow: '0 10px 25px rgba(37, 211, 102, 0.3)'
                   }}
                 >
                   <span style={{ fontSize: '1.2rem' }}>💬</span> Confirm on WhatsApp
                 </a>
 
-                <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '12px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                <div style={{ marginTop: '1rem', padding: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '20px', fontSize: '1rem', color: 'var(--text-muted)', fontWeight: '500' }}>
                   Once you send the message, I will verify the payment and call <strong>{studentName}</strong> at <strong>{studentPhone}</strong>.
                 </div>
               </div>

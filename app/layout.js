@@ -3,14 +3,14 @@ import Link from 'next/link';
 import './globals.css';
 
 export const metadata = {
-  title: 'SSB WITH ABHI | Personal Consultancy for Defence Aspirants',
+  title: 'SSB WITH ABHI | Premium Personal Consultancy for Defence Aspirants',
   description: 'Get personalized guidance and consultancy for SSB interviews from Abhi. Mock interviews, PPDT, psychology tests, and more.',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body style={{ backgroundColor: 'var(--bg-color)' }}>
         <nav className="navbar">
           <div className="nav-container">
             <Link href="/" className="logo">SSB WITH ABHI</Link>
@@ -18,7 +18,13 @@ export default function RootLayout({ children }) {
               <a href="#about" className="nav-link">About</a>
               <a href="#services" className="nav-link">Services</a>
               <a href="#how-it-works" className="nav-link">How it Works</a>
-              <a href="#consult" className="nav-link">Consult Now</a>
+              <a href="#consult" className="nav-link" style={{ 
+                padding: '0.6rem 1.2rem', 
+                background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+                color: 'white',
+                borderRadius: '12px',
+                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)'
+              }}>Consult Now</a>
             </div>
           </div>
         </nav>
@@ -35,8 +41,8 @@ export default function RootLayout({ children }) {
               <Link href="/terms" className="footer-link">Terms & Conditions</Link>
               <Link href="/refund" className="footer-link">Refund Policy</Link>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-              &copy; {new Date().getFullYear()} SSB WITH ABHI. All rights reserved.
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem', fontWeight: '500' }}>
+              &copy; {new Date().getFullYear()} <span style={{ fontWeight: '700', color: 'var(--accent-primary)' }}>SSB WITH ABHI</span>. All rights reserved.
             </p>
           </div>
         </footer>
