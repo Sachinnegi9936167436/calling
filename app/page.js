@@ -149,7 +149,7 @@ export default function Home() {
             <div className="step-item">
               <div className="step-number">4</div>
               <h3>Personalized Call</h3>
-              <p className="bio">Once verified, I will personally call you within 24 hours to start your mentorship journey.</p>
+              <p className="bio">Once verified, I will personally call you within 24-48 hours to start your mentorship journey.</p>
             </div>
           </div>
         </div>
