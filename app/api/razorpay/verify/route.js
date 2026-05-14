@@ -14,6 +14,10 @@ export async function POST(request) {
       amount
     } = await request.json();
 
+    if (!process.env.RAZORPAY_KEY_SECRET) {
+      return NextResponse.json({ error: 'Razorpay is not configured' }, { status: 500 });
+    }
+
     const body = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expectedSignature = crypto

@@ -9,6 +9,10 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Amount is required' }, { status: 400 });
     }
 
+    if (!razorpay) {
+      return NextResponse.json({ error: 'Razorpay is not configured' }, { status: 500 });
+    }
+
     const options = {
       amount: parseInt(amount) * 100, // amount in the smallest currency unit (paise)
       currency: "INR",
