@@ -1,5 +1,6 @@
 import { Analytics } from "@vercel/analytics/react";
 import Link from 'next/link';
+import Script from 'next/script';
 import './globals.css';
 
 export const metadata = {
@@ -51,6 +52,10 @@ export default function RootLayout({ children }) {
           </div>
         </footer>
         <Analytics />
+        <Script 
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

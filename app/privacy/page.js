@@ -34,7 +34,7 @@ export default function PrivacyPage() {
           <section>
             <h2 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', marginBottom: '0.75rem' }}>1. Information We Collect</h2>
             <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              When you use our service, we collect personal information you provide, such as your name, phone number, and transaction details. This information is necessary to verify your payment and provide the consultation service.
+              When you use our service, we collect personal information you provide, such as your name, phone number, and payment details. Payment processing is handled by Razorpay, and we only store the necessary transaction identifiers for verification.
             </p>
           </section>
 
@@ -60,7 +60,7 @@ export default function PrivacyPage() {
           <section>
             <h2 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', marginBottom: '0.75rem' }}>4. Third-Party Services</h2>
             <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              We may use third-party analytics (like Vercel Analytics) to understand how users interact with our site. We do not sell or share your personal information with third parties for marketing purposes.
+              We use <strong>Razorpay</strong> for secure payment processing. We also use third-party analytics (like Vercel Analytics) to understand how users interact with our site. We do not sell or share your personal information with third parties for marketing purposes.
             </p>
           </section>
 

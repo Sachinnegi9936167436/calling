@@ -66,7 +66,7 @@ export default function RefundPage() {
           <section>
             <h2 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', marginBottom: '0.75rem' }}>4. Non-Refundable Cases</h2>
             <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              Refunds will not be issued if the call was successfully made and completed. We also cannot issue refunds for incorrect UPI IDs provided by the user during the manual payment process.
+              Refunds will not be issued if the call was successfully made and completed. We also cannot issue refunds for incorrect contact details provided by the user that prevent us from establishing communication.
             </p>
           </section>
         </div>

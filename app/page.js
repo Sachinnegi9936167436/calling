@@ -18,28 +18,82 @@ export default function Home() {
 
   const handleSubmitDetails = async (e) => {
     e.preventDefault();
-    if (!studentName || !studentPhone || !transactionId) {
+    if (!studentName || !studentPhone) {
       alert("Please fill in all details");
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch('/api/submit', {
+      // 1. Create Razorpay order
+      const orderRes = await fetch('/api/razorpay/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentName, studentPhone, transactionId, amount }),
+        body: JSON.stringify({ amount }),
       });
-      setSuccess(true);
+      const order = await orderRes.json();
+
+      if (!order.id) {
+        throw new Error('Failed to create order');
+      }
+
+      // 2. Open Razorpay Checkout
+      if (!window.Razorpay) {
+        alert("Razorpay SDK is still loading. Please wait a few seconds and try again.");
+        setLoading(false);
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "SSB WITH ABHI",
+        description: "Consultation Fee",
+        order_id: order.id,
+        handler: async function (response) {
+          // 3. Verify payment
+          const verifyRes = await fetch('/api/razorpay/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              studentName,
+              studentPhone,
+              amount
+            }),
+          });
+          const verifyData = await verifyRes.json();
+
+          if (verifyData.success) {
+            setSuccess(true);
+            setTransactionId(response.razorpay_payment_id);
+          } else {
+            alert("Payment verification failed. Please contact support.");
+          }
+        },
+        prefill: {
+          name: studentName,
+          contact: studentPhone,
+        },
+        theme: {
+          color: "#6366f1",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (error) {
-      console.error('Error submitting:', error);
-      setSuccess(true);
+      console.error('Error in payment process:', error);
+      alert('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  const whatsappMessage = `Hello! I have just paid ₹${amount} for the consultation. %0A%0AMy Details:%0A- Name: ${studentName}%0A- Phone: ${studentPhone}%0A- Transaction ID: ${transactionId}%0A%0APlease verify and call me back.`;
+  const whatsappMessage = `Hello! I have just paid ₹${amount} via Razorpay for the consultation. %0A%0AMy Details:%0A- Name: ${studentName}%0A- Phone: ${studentPhone}%0A- Payment ID: ${transactionId}%0A%0APlease call me back.`;
 
   return (
     <div>
@@ -241,23 +295,23 @@ export default function Home() {
           <div style={{ maxWidth: '700px', margin: '0 auto' }}>
             <div className="step-item">
               <div className="step-number">1</div>
-              <h3>Pay Consultation Fee</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Pay a nominal fee of ₹{amount} via UPI to book your session.</p>
+              <h3>Fill Your Details</h3>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Enter your name and phone number in the form below.</p>
             </div>
             <div className="step-item">
               <div className="step-number">2</div>
-              <h3>Fill Your Details</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Submit your name, phone number, and transaction ID in the form below.</p>
+              <h3>Pay Securely</h3>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Complete the payment of ₹{amount} via Razorpay (UPI, Card, or Netbanking).</p>
             </div>
             <div className="step-item">
               <div className="step-number">3</div>
-              <h3>WhatsApp Confirmation</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Click the WhatsApp button to send your details directly.</p>
+              <h3>Instant Verification</h3>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>Our system verifies your payment automatically. No need to send screenshots.</p>
             </div>
             <div className="step-item">
               <div className="step-number">4</div>
               <h3>Personalized Call</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Once verified, I will personally call you within 24-48 hours.</p>
+              <p className="bio" style={{ color: 'var(--text-muted)' }}>I will personally call you within 24-48 hours for your consultation.</p>
             </div>
           </div>
         </div>
@@ -270,42 +324,29 @@ export default function Home() {
             {!success ? (
               <>
                 <h2 className="hero-title" style={{ fontSize: '2rem', marginBottom: '1rem' }}>Get Your <span className="gradient-text">Personal Call</span></h2>
-                <p className="bio" style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Fill the form after paying ₹{amount} to book your slot.</p>
+                <p className="bio" style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Fill the form below and proceed to secure payment.</p>
 
                 <div className="price-tag">Consultation Fee: ₹{amount}</div>
-
-                <div className="payment-instructions">
-                  <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600' }}>Pay ₹{amount} to this UPI ID:</p>
-                  <div className="upi-id-wrapper" style={{ 
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', margin: '1.5rem 0', background: 'white', padding: '12px 20px', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-                  }}>
-                    <div className="upi-id" style={{ margin: 0, background: 'transparent', border: 'none', padding: 0, fontSize: '1.125rem', fontWeight: '700', color: 'var(--accent-primary)', letterSpacing: '0.5px' }}>{creatorUPI}</div>
-                    <button onClick={(e) => {
-                      navigator.clipboard.writeText(creatorUPI);
-                      const btn = e.currentTarget;
-                      const originalText = btn.innerHTML;
-                      btn.innerHTML = '✅ Copied!';
-                      btn.style.background = 'var(--success-color)';
-                      setTimeout(() => { btn.innerHTML = originalText; btn.style.background = 'var(--accent-primary)'; }, 2000);
-                    }} style={{ background: 'var(--accent-primary)', border: 'none', borderRadius: '10px', padding: '8px 16px', color: 'white', cursor: 'pointer', fontSize: '0.875rem', fontWeight: '700', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', gap: '6px' }}>📋 Copy</button>
-                  </div>
-                  
-                  <a href={upiLink} className="pay-btn" style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>📲 Pay Now (GPay/PhonePe)</a>
-                </div>
 
                 <form onSubmit={handleSubmitDetails}>
                   <div className="form-group"><label className="form-label">Your Name</label><input type="text" className="form-input" placeholder="Enter your full name" value={studentName} onChange={(e) => setStudentName(e.target.value)} required /></div>
                   <div className="form-group"><label className="form-label">Your Phone Number</label><input type="tel" className="form-input" placeholder="e.g. +91 98765 43210" value={studentPhone} onChange={(e) => setStudentPhone(e.target.value)} required /></div>
-                  <div className="form-group"><label className="form-label">Transaction ID / UTR Number</label><input type="text" className="form-input" placeholder="12-digit Transaction ID" value={transactionId} onChange={(e) => setTransactionId(e.target.value)} required /></div>
-                  <button type="submit" className="pay-btn" disabled={loading}>{loading ? "Submitting..." : "Submit Details"}</button>
+                  <button type="submit" className="pay-btn" disabled={loading}>{loading ? "Processing..." : "Pay Now & Book Call"}</button>
                 </form>
+                
+                <p style={{ marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center' }}>
+                  Secure payment powered by <strong>Razorpay</strong>
+                </p>
               </>
             ) : (
               <div className="success-container">
                 <div className="success-icon">✓</div>
-                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '0.5rem' }}>Details Submitted!</h2>
-                <p style={{ color: 'var(--text-muted)', textAlign: 'center', lineHeight: '1.6', fontSize: '1.125rem' }}>Final Step: Please click the button below to send your payment details on WhatsApp for instant verification.</p>
-                <a href={`https://wa.me/${creatorWhatsApp}?text=${whatsappMessage}`} target="_blank" rel="noreferrer" className="pay-btn" style={{ textDecoration: 'none', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 25px rgba(37, 211, 102, 0.3)' }}><span style={{ fontSize: '1.2rem' }}>💬</span> Confirm on WhatsApp</a>
+                <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '0.5rem' }}>Payment Successful!</h2>
+                <p style={{ color: 'var(--text-muted)', textAlign: 'center', lineHeight: '1.6', fontSize: '1.125rem' }}>Thank you, {studentName}. Your payment has been verified automatically. I will call you shortly on {studentPhone}.</p>
+                <div style={{ margin: '1.5rem 0', padding: '1rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '12px', width: '100%' }}>
+                  <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: '600', color: 'var(--accent-primary)' }}>Payment ID: {transactionId}</p>
+                </div>
+                <a href={`https://wa.me/${creatorWhatsApp}?text=${whatsappMessage}`} target="_blank" rel="noreferrer" className="pay-btn" style={{ textDecoration: 'none', background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 25px rgba(37, 211, 102, 0.3)' }}><span style={{ fontSize: '1.2rem' }}>💬</span> Join WhatsApp Support</a>
               </div>
             )}
           </div>

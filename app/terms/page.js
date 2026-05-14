@@ -48,14 +48,14 @@ export default function TermsPage() {
           <section>
             <h2 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', marginBottom: '0.75rem' }}>3. Payment & Refunds</h2>
             <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              All payments are made manually via UPI. Once a payment is verified and a call is completed or scheduled, no refunds will be issued. Please ensure you provide correct contact details (Name and Phone) for verification.
+              All payments are processed securely via Razorpay. Once a payment is verified and a call is completed or scheduled, no refunds will be issued. Please ensure you provide correct contact details (Name and Phone) during the checkout process.
             </p>
           </section>
 
           <section>
             <h2 style={{ fontSize: '1.25rem', color: 'var(--accent-primary)', marginBottom: '0.75rem' }}>4. User Obligations</h2>
             <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>
-              Users must provide accurate information and a valid transaction ID. Any attempt to provide fraudulent information may result in denial of service without refund.
+              Users must provide accurate information. Any attempt to provide fraudulent information or initiate unauthorized chargebacks may result in denial of service and legal action.
             </p>
           </section>
 
