@@ -11,6 +11,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body style={{ backgroundColor: 'var(--bg-color)' }}>
+        <div className="urgency-banner">
+          🚀 Batch filling fast - 4 slots left for this week!
+        </div>
+
         <nav className="navbar">
           <div className="nav-container">
             <Link href="/" className="logo">SSB WITH ABHI</Link>
