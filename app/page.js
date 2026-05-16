@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -8,6 +8,99 @@ export default function Home() {
   const [studentPhone, setStudentPhone] = useState('');
   const [studentName, setStudentName] = useState('');
   const [transactionId, setTransactionId] = useState('');
+
+  // Parallax Effect
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const { clientX, clientY } = e;
+      const x = (clientX / window.innerWidth - 0.5) * 30; // 30px max movement
+      const y = (clientY / window.innerHeight - 0.5) * 30;
+      
+      document.documentElement.style.setProperty('--parallax-x', `${x}px`);
+      document.documentElement.style.setProperty('--parallax-y', `${y}px`);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Scroll Reveal Effect
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+
+    const revealElements = document.querySelectorAll('.reveal');
+    revealElements.forEach(el => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Quiz State
+  const [quizStep, setQuizStep] = useState(0); // 0: Start, 1-5: Questions, 6: Result
+  const [quizScore, setQuizScore] = useState(0);
+  
+  const quizQuestions = [
+    {
+      question: "How prepared are you for the OIR (Officer Intelligence Rating) test?",
+      options: [
+        { text: "Fully prepared, scoring 90%+", score: 20 },
+        { text: "Somewhat prepared, need practice", score: 10 },
+        { text: "What is OIR?", score: 0 }
+      ]
+    },
+    {
+      question: "Can you naturally demonstrate at least 10 Officer Like Qualities (OLQs)?",
+      options: [
+        { text: "Yes, I know my strengths well", score: 20 },
+        { text: "I know them, but struggle to show them", score: 10 },
+        { text: "I need to learn what they are", score: 0 }
+      ]
+    },
+    {
+      question: "Are your Psychology test (TAT/WAT) responses consistent with your PIQ?",
+      options: [
+        { text: "Yes, they reflect my true self", score: 20 },
+        { text: "Mostly, but I sometimes get confused", score: 10 },
+        { text: "I write what I think they want to hear", score: 0 }
+      ]
+    },
+    {
+      question: "How do you handle a conflict in a Group Planning Exercise (GPE)?",
+      options: [
+        { text: "I suggest a logical middle ground", score: 20 },
+        { text: "I try to push my point forward", score: 10 },
+        { text: "I stay quiet to avoid argument", score: 0 }
+      ]
+    },
+    {
+      question: "Do you have a clear strategy for the 'Rapid Fire' questions in the Interview?",
+      options: [
+        { text: "Yes, I can handle pressure easily", score: 20 },
+        { text: "I get nervous and forget details", score: 10 },
+        { text: "I don't know how to handle them", score: 0 }
+      ]
+    }
+  ];
+
+  const handleQuizAnswer = (score) => {
+    setQuizScore(prev => prev + score);
+    setQuizStep(prev => prev + 1);
+  };
+
+  const resetQuiz = () => {
+    setQuizStep(0);
+    setQuizScore(0);
+  };
 
   // YOUR DETAILS
   const creatorUPI = "abhisheksingh17nasa8@okhdfcbank"; 
@@ -25,7 +118,6 @@ export default function Home() {
 
     setLoading(true);
     try {
-      // 1. Create Razorpay order
       const orderRes = await fetch('/api/razorpay/order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,7 +129,6 @@ export default function Home() {
         throw new Error('Failed to create order');
       }
 
-      // 2. Open Razorpay Checkout
       if (!window.Razorpay) {
         alert("Razorpay SDK is still loading. Please wait a few seconds and try again.");
         setLoading(false);
@@ -52,7 +143,6 @@ export default function Home() {
         description: "Consultation Fee",
         order_id: order.id,
         handler: async function (response) {
-          // 3. Verify payment
           const verifyRes = await fetch('/api/razorpay/verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -98,7 +188,7 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero reveal">
         <div className="section-container">
           <h1 className="hero-title">
             <span className="reveal-text" style={{ animationDelay: '0.1s' }}>Master Your SSB</span><br/>
@@ -121,7 +211,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" style={{ background: 'white' }}>
+      <section id="about" style={{ background: 'white' }} className="reveal">
         <div className="section-container">
           <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1.5rem' }}>
             About <span className="gradient-text">SSB WITH ABHI</span>
@@ -154,7 +244,7 @@ export default function Home() {
       </section>
 
       {/* Roadmap Section */}
-      <section id="roadmap">
+      <section id="roadmap" className="reveal">
         <div className="section-container">
           <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
             The <span className="gradient-text">SSB Journey</span>
@@ -203,8 +293,97 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SSB Readiness Quiz Section [NEW] */}
+      <section id="quiz" className="reveal" style={{ background: '#f1f5f9' }}>
+        <div className="section-container">
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
+            Are You <span className="gradient-text">SSB Ready?</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem', opacity: 1, animation: 'none' }}>
+            Take this quick 5-question test to find out your selection probability.
+          </p>
+
+          <div className="quiz-container">
+            {quizStep === 0 ? (
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>🎯</div>
+                <h3 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '1rem' }}>Start Your Evaluation</h3>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Answer honestly to get a realistic assessment of your current preparation level.</p>
+                <button onClick={() => setQuizStep(1)} className="pay-btn">Start Quiz Now</button>
+              </div>
+            ) : quizStep <= 5 ? (
+              <div>
+                <div className="quiz-progress-bar" style={{ width: `${(quizStep / 5) * 100}%` }}></div>
+                <div className="quiz-question">
+                  <span style={{ fontSize: '0.875rem', fontWeight: '800', color: 'var(--accent-primary)', textTransform: 'uppercase' }}>Question {quizStep} of 5</span>
+                  <h3>{quizQuestions[quizStep - 1].question}</h3>
+                </div>
+                <div className="quiz-options">
+                  {quizQuestions[quizStep - 1].options.map((option, idx) => (
+                    <button key={idx} onClick={() => handleQuizAnswer(option.score)} className="quiz-option">
+                      <span style={{ width: '32px', height: '32px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #e2e8f0', fontWeight: '800', color: 'var(--accent-primary)', fontSize: '0.75rem' }}>{String.fromCharCode(65 + idx)}</span>
+                      {option.text}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="quiz-result">
+                <div className="result-score">{quizScore}%</div>
+                <div className="result-badge">
+                  {quizScore >= 80 ? "SSB Ready" : quizScore >= 50 ? "Almost There" : "Mentorship Needed"}
+                </div>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '1rem' }}>
+                  {quizScore >= 80 ? "Great job! You have a solid foundation." : quizScore >= 50 ? "You're on the right track, but need more polish." : "You need strategic guidance to clear the SSB."}
+                </h3>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', lineHeight: '1.6' }}>
+                  {quizScore >= 80 ? "Book a consultation to ensure your performance stays top-notch on the big day." : quizScore >= 50 ? "Let's identify your weak areas and turn them into strengths before your attempt." : "Don't risk a rejection. Get expert mentorship to build your officer-like qualities from scratch."}
+                </p>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                  <a href="#consult" className="pay-btn">Book Consultation Now</a>
+                  <button onClick={resetQuiz} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontWeight: '700', cursor: 'pointer', textDecoration: 'underline' }}>Retake Quiz</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Daily Tips Section */}
+      <section id="tips" style={{ background: 'white' }} className="reveal">
+        <div className="section-container">
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
+            Daily <span className="gradient-text">SSB Tips</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem', opacity: 1, animation: 'none' }}>
+            Stay ahead with these essential insights for your preparation.
+          </p>
+
+          <div className="grid">
+            <div className="tip-card">
+              <span className="tip-badge">Psychology</span>
+              <h3>The Secret to TAT</h3>
+              <p>Don't just describe the picture. Focus on the 'Hero' taking proactive steps to solve a problem with a positive outcome. Character reflects personality.</p>
+              <a href="#" className="read-more">Learn More →</a>
+            </div>
+            <div className="tip-card">
+              <span className="tip-badge">Interview</span>
+              <h3>Mastering the PIQ</h3>
+              <p>Your Personal Information Questionnaire is the script for your interview. Any discrepancy between your PIQ and your answers is a red flag.</p>
+              <a href="#" className="read-more">Learn More →</a>
+            </div>
+            <div className="tip-card">
+              <span className="tip-badge">Leadership</span>
+              <h3>Group Dynamics</h3>
+              <p>In GTO, it's not about being the loudest; it's about being the most logical and inclusive. A leader takes the group along, not just themselves.</p>
+              <a href="#" className="read-more">Learn More →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Comparison Section */}
-      <section id="comparison" style={{ background: 'white' }}>
+      <section id="comparison" className="reveal">
         <div className="section-container">
           <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
             Why <span className="gradient-text">Choose Mentorship?</span>
@@ -223,31 +402,11 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="feature-col">Psych Evaluation</td>
-                  <td><span className="cross-icon">✕</span> Random Internet tips</td>
-                  <td className="highlight"><span className="check-icon">✓</span> Expert OLQ mapping</td>
-                </tr>
-                <tr>
-                  <td className="feature-col">PPDT Strategy</td>
-                  <td><span className="cross-icon">✕</span> Generic stories</td>
-                  <td className="highlight"><span className="check-icon">✓</span> Impactful narration</td>
-                </tr>
-                <tr>
-                  <td className="feature-col">Personal Interview</td>
-                  <td><span className="cross-icon">✕</span> Guesswork</td>
-                  <td className="highlight"><span className="check-icon">✓</span> Mock-style strategy</td>
-                </tr>
-                <tr>
-                  <td className="feature-col">Direct Access</td>
-                  <td><span className="cross-icon">✕</span> None</td>
-                  <td className="highlight"><span className="check-icon">✓</span> 24/7 WhatsApp support</td>
-                </tr>
-                <tr>
-                  <td className="feature-col">Result Oriented</td>
-                  <td><span className="cross-icon">✕</span> Trial and error</td>
-                  <td className="highlight"><span className="check-icon">✓</span> Proven success path</td>
-                </tr>
+                <tr><td className="feature-col">Psych Evaluation</td><td>✕ Random Internet tips</td><td className="highlight">✓ Expert OLQ mapping</td></tr>
+                <tr><td className="feature-col">PPDT Strategy</td><td>✕ Generic stories</td><td className="highlight">✓ Impactful narration</td></tr>
+                <tr><td className="feature-col">Personal Interview</td><td>✕ Guesswork</td><td className="highlight">✓ Mock-style strategy</td></tr>
+                <tr><td className="feature-col">Direct Access</td><td>✕ None</td><td className="highlight">✓ 24/7 WhatsApp support</td></tr>
+                <tr><td className="feature-col">Result Oriented</td><td>✕ Trial and error</td><td className="highlight">✓ Proven success path</td></tr>
               </tbody>
             </table>
           </div>
@@ -255,7 +414,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services">
+      <section id="services" style={{ background: 'white' }} className="reveal">
         <div className="section-container">
           <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
             Our <span className="gradient-text">Premium Services</span>
@@ -286,57 +445,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it Works Section */}
-      <section id="how-it-works" style={{ background: 'white' }}>
-        <div className="section-container">
-          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '4rem' }}>
-            How It <span className="gradient-text">Works</span>
-          </h2>
-          <div style={{ maxWidth: '700px', margin: '0 auto' }}>
-            <div className="step-item">
-              <div className="step-number">1</div>
-              <h3>Fill Your Details</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Enter your name and phone number in the form below.</p>
-            </div>
-            <div className="step-item">
-              <div className="step-number">2</div>
-              <h3>Pay Securely</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Complete the payment of ₹{amount} via Razorpay (UPI, Card, or Netbanking).</p>
-            </div>
-            <div className="step-item">
-              <div className="step-number">3</div>
-              <h3>Instant Verification</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>Our system verifies your payment automatically. No need to send screenshots.</p>
-            </div>
-            <div className="step-item">
-              <div className="step-number">4</div>
-              <h3>Personalized Call</h3>
-              <p className="bio" style={{ color: 'var(--text-muted)' }}>I will personally call you within 24-48 hours for your consultation.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Consultation/Payment Form Section */}
-      <section id="consult">
+      <section id="consult" className="reveal">
         <div className="section-container">
           <div className="glass-card">
             {!success ? (
               <>
                 <h2 className="hero-title" style={{ fontSize: '2rem', marginBottom: '1rem' }}>Get Your <span className="gradient-text">Personal Call</span></h2>
                 <p className="bio" style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Fill the form below and proceed to secure payment.</p>
-
                 <div className="price-tag">Consultation Fee: ₹{amount}</div>
-
                 <form onSubmit={handleSubmitDetails}>
                   <div className="form-group"><label className="form-label">Your Name</label><input type="text" className="form-input" placeholder="Enter your full name" value={studentName} onChange={(e) => setStudentName(e.target.value)} required /></div>
                   <div className="form-group"><label className="form-label">Your Phone Number</label><input type="tel" className="form-input" placeholder="e.g. +91 98765 43210" value={studentPhone} onChange={(e) => setStudentPhone(e.target.value)} required /></div>
                   <button type="submit" className="pay-btn" disabled={loading}>{loading ? "Processing..." : "Pay Now & Book Call"}</button>
                 </form>
-                
-                <p style={{ marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-                  Secure payment powered by <strong>Razorpay</strong>
-                </p>
+                <p style={{ marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-muted)', textAlign: 'center' }}>Secure payment powered by <strong>Razorpay</strong></p>
               </>
             ) : (
               <div className="success-container">

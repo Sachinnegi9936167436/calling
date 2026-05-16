@@ -43,6 +43,7 @@ export default function AdminPage() {
 
   const fetchSubmissions = async () => {
     setLoading(true);
+    setError('');
     try {
       const res = await fetch('/api/admin/submissions');
       if (!res.ok) throw new Error('Failed to fetch data');
@@ -57,6 +58,7 @@ export default function AdminPage() {
   };
 
   const fetchContacts = async () => {
+    setError('');
     try {
       const res = await fetch('/api/admin/contacts');
       if (!res.ok) throw new Error('Failed to fetch contacts');
@@ -202,6 +204,12 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '1rem', borderRadius: '12px', marginBottom: '2rem' }}>
+          <strong>Error:</strong> {error}
+        </div>
+      )}
 
       {/* Tab Switcher */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
