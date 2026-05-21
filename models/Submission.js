@@ -16,7 +16,7 @@ const SubmissionSchema = new mongoose.Schema({
   amount: {
     type: String,
     required: [true, 'Please provide the amount paid'],
-    default: '55'
+    default: '80'
   },
   timestamp: {
     type: Date,

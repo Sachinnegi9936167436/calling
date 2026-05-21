@@ -35,7 +35,7 @@ export async function POST(request) {
         studentName,
         studentPhone,
         transactionId: razorpay_payment_id, // Using payment ID as transaction ID
-        amount: amount || '50',
+        amount: amount || '80',
       });
 
       return NextResponse.json({ 
