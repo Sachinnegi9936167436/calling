@@ -9,6 +9,107 @@ export default function Home() {
   const [studentName, setStudentName] = useState('');
   const [transactionId, setTransactionId] = useState('');
 
+  const [activeWheelFactor, setActiveWheelFactor] = useState(1);
+  const [activeFactor, setActiveFactor] = useState(1);
+  const [openFaq, setOpenFaq] = useState(null);
+
+  const stats = [
+    { number: "1,200+", label: "Candidates Trained" },
+    { number: "92%", label: "Screening Success" },
+    { number: "15", label: "OLQs Covered" },
+    { number: "24/7", label: "WhatsApp Support" }
+  ];
+
+  const olqData = [
+    {
+      factor: 1,
+      title: "Planning & Organising",
+      desc: "The intellectual capacity to analyze problems, organize resources, and express thoughts clearly.",
+      icon: "🧠",
+      qualities: [
+        { name: "Effective Intelligence", desc: "Ability to solve practical, real-life problems and cope with unexpected difficulties." },
+        { name: "Reasoning Ability", desc: "Ability to grasp the essentials of a situation, think logically, and arrive at rational conclusions." },
+        { name: "Organizing Ability", desc: "Ability to arrange resources in a systematic and efficient way to achieve results." },
+        { name: "Power of Expression", desc: "Ability to put across one's ideas clearly, logically, and persuasively." }
+      ]
+    },
+    {
+      factor: 2,
+      title: "Social Adjustment",
+      desc: "The capacity to adapt to new environments, cooperate with others, and carry out responsibilities.",
+      icon: "🤝",
+      qualities: [
+        { name: "Social Adaptability", desc: "Ability to adjust easily to varied social environments and build harmonious relations." },
+        { name: "Cooperation", desc: "Ability to work jointly with others toward a common goal, valuing collective efforts." },
+        { name: "Sense of Responsibility", desc: "Understanding the values of duty and discipline, and executing them with sincerity." }
+      ]
+    },
+    {
+      factor: 3,
+      title: "Social Effectiveness",
+      desc: "The capacity to influence a group, take initiative, build confidence, make quick decisions, and stay lively.",
+      icon: "⚡",
+      qualities: [
+        { name: "Initiative", desc: "Ability to take the first step in a situation and sustain the effort to complete it." },
+        { name: "Self-Confidence", desc: "Faith in one's own abilities to handle stressful or unfamiliar situations successfully." },
+        { name: "Speed of Decision", desc: "Ability to arrive at workable decisions quickly under pressure or time constraints." },
+        { name: "Ability to Influence Group", desc: "Ability to convince others and make them follow a logical plan willingly." },
+        { name: "Liveliness", desc: "Capacity to remain cheerful, optimistic, and keep group morale high even under stress." }
+      ]
+    },
+    {
+      factor: 4,
+      title: "Dynamic (Grit)",
+      desc: "The mental and physical strength to face adversity, show determination, courage, and stamina.",
+      icon: "🔥",
+      qualities: [
+        { name: "Determination", desc: "Sustained effort to achieve an objective despite obstacles, setbacks, or fatigue." },
+        { name: "Courage", desc: "Ability to face danger or risk calmly, and lead from the front with resolve." },
+        { name: "Stamina", desc: "Physical and mental endurance to withstand prolonged exertion and stress without giving up." }
+      ]
+    }
+  ];
+
+  const testimonials = [
+    {
+      quote: "Abhi's guidance on PIQ mapping was game-changing for me. He pointed out inconsistencies in my psychology answers that I would have never noticed myself. Recommended from 1 AFSB Dehradun!",
+      name: "Rahul Sharma",
+      entry: "AFCAT 2 2025 (Flying Branch)",
+      avatar: "RS"
+    },
+    {
+      quote: "I was screened out twice before joining SSB WITH ABHI. The narration tips and OIR practice sheets helped me crack the screening day easily this time. Recommending in my 3rd attempt is like a dream.",
+      name: "Siddharth Verma",
+      entry: "NDA 152 Entry",
+      avatar: "SV"
+    },
+    {
+      quote: "The mock interview session was incredibly realistic. The rapid-fire questions preparation helped me stay completely calm during the actual interview with the Deputy President. Strongly recommend Abhi!",
+      name: "Priya Patel",
+      entry: "CDS (OTA) Entry",
+      avatar: "PP"
+    }
+  ];
+
+  const faqs = [
+    {
+      q: "What is covered in the ₹80 consultation call?",
+      a: "The ₹80 call is a personal 1-on-1 introductory session (approx. 20-30 minutes) where we assess your current preparation, identify your main weak areas (Screening, Psych, GTO, or Interview), and outline a customized roadmap for your upcoming SSB attempt."
+    },
+    {
+      q: "How soon will I get the call after making the payment?",
+      a: "Once the payment is successful, you will be redirected to join our premium WhatsApp support. You can send your payment receipt there, and we will schedule your personal consultation call within 24 to 48 hours at a time convenient for you."
+    },
+    {
+      q: "I am a complete beginner. Is this mentorship suitable for me?",
+      a: "Absolutely! In fact, starting early is the best way to develop genuine Officer Like Qualities (OLQs). We break down the entire 5-day selection process step-by-step so you build the correct habits from day one."
+    },
+    {
+      q: "Will I get my psychology responses (TAT, WAT, SRT) evaluated?",
+      a: "Yes. During our mentorship program, we conduct detailed evaluations of your TAT stories, WAT sentences, and SRT responses to ensure they align naturally with your PIQ profile without looking coached."
+    }
+  ];
+
   // Parallax Effect
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -186,27 +287,107 @@ export default function Home() {
   const whatsappMessage = `Hello! I have just paid ₹${amount} via Razorpay for the consultation. %0A%0AMy Details:%0A- Name: ${studentName}%0A- Phone: ${studentPhone}%0A- Payment ID: ${transactionId}%0A%0APlease call me back.`;
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
+      {/* Ambient Background Orbs */}
+      <div className="ambient-orb orb-1"></div>
+      <div className="ambient-orb orb-2"></div>
+      <div className="ambient-orb orb-3"></div>
+
       {/* Hero Section */}
       <section className="hero reveal">
         <div className="section-container">
-          <h1 className="hero-title">
-            <span className="reveal-text" style={{ animationDelay: '0.1s' }}>Master Your SSB</span><br/>
-            <span className="reveal-text gradient-text" style={{ animationDelay: '0.3s' }}>Personalized Guidance</span>
-          </h1>
-          <p className="hero-subtitle">
-            Don't leave your selection to chance. Get direct mentorship, psychology evaluation, and strategic guidance from an expert.
-          </p>
-          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap', opacity: 0, animation: 'fadeIn 1s 1s forwards' }}>
-            <a href="#consult" className="pay-btn" style={{ minWidth: '220px' }}>Get Started Now</a>
-            <a href="#roadmap" className="pay-btn" style={{ 
-              minWidth: '220px', 
-              background: 'white', 
-              color: 'var(--accent-primary)',
-              border: '2px solid var(--accent-primary)',
-              boxShadow: 'none'
-            }}>View Roadmap</a>
+          <div className="hero-grid">
+            <div className="hero-text">
+              <div className="trust-badges-row">
+                <span className="trust-badge">⭐ 4.9/5 Rating</span>
+                <span className="trust-badge">🎯 92% Screened In</span>
+                <span className="trust-badge">💬 24/7 WhatsApp</span>
+              </div>
+              <h1 className="hero-title">
+                <span className="reveal-text" style={{ animationDelay: '0.1s' }}>Master Your SSB</span><br/>
+                <span className="reveal-text gradient-text" style={{ animationDelay: '0.3s' }}>Personalized Guidance</span>
+              </h1>
+              <p className="hero-subtitle">
+                Don't leave your selection to chance. Get direct mentorship, psychology evaluation, and strategic guidance from an expert.
+              </p>
+              <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', opacity: 0, animation: 'fadeIn 1s 1s forwards' }}>
+                <a href="#consult" className="pay-btn" style={{ minWidth: '220px' }}>Get Started Now</a>
+                <a href="#roadmap" className="pay-btn" style={{ 
+                  minWidth: '220px', 
+                  background: 'white', 
+                  color: 'var(--accent-primary)',
+                  border: '2px solid var(--accent-primary)',
+                  boxShadow: 'none'
+                }}>View Roadmap</a>
+              </div>
+            </div>
+            <div className="hero-visual" style={{ opacity: 0, animation: 'fadeIn 1s 0.6s forwards' }}>
+              <div className="olq-wheel-container">
+                <svg width="380" height="380" viewBox="0 0 380 380">
+                  {/* Planning & Organising */}
+                  <path 
+                    className={`olq-sector factor-1 ${activeWheelFactor === 1 ? 'active' : ''}`}
+                    d="M 190 20 A 170 170 0 0 1 360 190 L 265 190 A 75 75 0 0 0 190 115 Z"
+                    onMouseEnter={() => setActiveWheelFactor(1)}
+                  />
+                  
+                  {/* Social Adjustment */}
+                  <path 
+                    className={`olq-sector factor-2 ${activeWheelFactor === 2 ? 'active' : ''}`}
+                    d="M 360 190 A 170 170 0 0 1 190 360 L 190 265 A 75 75 0 0 0 265 190 Z"
+                    onMouseEnter={() => setActiveWheelFactor(2)}
+                  />
+                  
+                  {/* Social Effectiveness */}
+                  <path 
+                    className={`olq-sector factor-3 ${activeWheelFactor === 3 ? 'active' : ''}`}
+                    d="M 190 360 A 170 170 0 0 1 20 190 L 115 190 A 75 75 0 0 0 190 265 Z"
+                    onMouseEnter={() => setActiveWheelFactor(3)}
+                  />
+                  
+                  {/* Dynamic (Grit) */}
+                  <path 
+                    className={`olq-sector factor-4 ${activeWheelFactor === 4 ? 'active' : ''}`}
+                    d="M 20 190 A 170 170 0 0 1 190 20 L 190 115 A 75 75 0 0 0 115 190 Z"
+                    onMouseEnter={() => setActiveWheelFactor(4)}
+                  />
+                  
+                  {/* Labels */}
+                  <text x="280" y="95" className="olq-label">Factor I: Planning</text>
+                  <text x="280" y="295" className="olq-label">Factor II: Social</text>
+                  <text x="100" y="295" className="olq-label">Factor III: Leadership</text>
+                  <text x="100" y="95" className="olq-label">Factor IV: Dynamic</text>
+                </svg>
+                
+                <div className="olq-wheel-center">
+                  <span className="title">
+                    {activeWheelFactor === 1 && "Planning"}
+                    {activeWheelFactor === 2 && "Social"}
+                    {activeWheelFactor === 3 && "Leadership"}
+                    {activeWheelFactor === 4 && "Dynamic"}
+                  </span>
+                  <span className="desc" style={{ display: '-webkit-box', WebkitLineClamp: '4', WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {activeWheelFactor === 1 && "Effective Intel, Reasoning, Organizing, Expression"}
+                    {activeWheelFactor === 2 && "Adaptability, Cooperation, Responsibility"}
+                    {activeWheelFactor === 3 && "Initiative, Confidence, Decisiveness, Influence, Liveliness"}
+                    {activeWheelFactor === 4 && "Determination, Courage, Physical & Mental Grit"}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Stats Counter Section */}
+      <section id="stats" className="stats-section reveal">
+        <div className="stats-grid">
+          {stats.map((stat, idx) => (
+            <div key={idx} className="stat-card">
+              <div className="stat-number">{stat.number}</div>
+              <div className="stat-label">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -293,7 +474,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SSB Readiness Quiz Section [NEW] */}
+      {/* Interactive OLQs Section */}
+      <section id="olqs" className="reveal" style={{ background: 'white' }}>
+        <div className="section-container">
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
+            Master the <span className="gradient-text">15 OLQs</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '3rem', opacity: 1, animation: 'none' }}>
+            The Selection Board evaluates you on 15 core Officer Like Qualities. Click each factor below to explore details.
+          </p>
+          
+          <div className="olq-factors-grid">
+            {olqData.map((data) => (
+              <div 
+                key={data.factor}
+                className={`olq-factor-card factor-${data.factor} ${activeFactor === data.factor ? 'active' : ''}`}
+                onClick={() => setActiveFactor(data.factor)}
+              >
+                <h3 className="olq-factor-title">
+                  <span style={{ fontSize: '1.5rem' }}>{data.icon}</span>
+                  {data.title}
+                </h3>
+                <p className="olq-factor-desc">{data.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {activeFactor !== null && (
+            <div className="olq-drawer open">
+              <div className="olq-drawer-grid">
+                {olqData.find(d => d.factor === activeFactor).qualities.map((quality, idx) => (
+                  <div key={idx} className={`olq-detail-card factor-${activeFactor}`}>
+                    <h4>{quality.name}</h4>
+                    <p>{quality.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* SSB Readiness Quiz Section */}
       <section id="quiz" className="reveal" style={{ background: '#f1f5f9' }}>
         <div className="section-container">
           <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
@@ -413,7 +635,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Section */}
+      {/* Testimonials Section */}
+      <section id="testimonials" className="reveal" style={{ background: '#f8fafc' }}>
+        <div className="section-container">
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
+            Success <span className="gradient-text">Stories</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem', opacity: 1, animation: 'none' }}>
+            See how defence aspirants cleared their SSB and earned their recommendations.
+          </p>
+          
+          <div className="testimonials-grid">
+            {testimonials.map((t, idx) => (
+              <div key={idx} className="testimonial-card">
+                <span className="testimonial-badge">Recommended</span>
+                <p className="testimonial-quote">"{t.quote}"</p>
+                <div className="testimonial-author">
+                  <div className="author-avatar">{t.avatar}</div>
+                  <div className="author-info">
+                    <h4>{t.name}</h4>
+                    <p>{t.entry}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Our Services Section */}
       <section id="services" style={{ background: 'white' }} className="reveal">
         <div className="section-container">
           <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
@@ -441,6 +691,32 @@ export default function Home() {
               <h3>24/7 Support</h3>
               <p className="bio" style={{ color: 'var(--text-muted)' }}>Direct access to me via WhatsApp for any queries during your preparation journey.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="faq-section reveal">
+        <div className="section-container">
+          <h2 className="hero-title" style={{ fontSize: '2.5rem', textAlign: 'center', marginBottom: '1rem' }}>
+            Frequently Asked <span className="gradient-text">Questions</span>
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'center', marginBottom: '4rem', opacity: 1, animation: 'none' }}>
+            Got questions? We've got answers.
+          </p>
+          
+          <div className="faq-container">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className={`faq-item ${openFaq === idx ? 'open' : ''}`}>
+                <button className="faq-question" onClick={() => setOpenFaq(openFaq === idx ? null : idx)}>
+                  {faq.q}
+                  <span className="faq-icon">+</span>
+                </button>
+                <div className="faq-answer">
+                  <p>{faq.a}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
